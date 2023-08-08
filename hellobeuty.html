@@ -1,0 +1,175 @@
+﻿html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Questionnaire</title>
+    <style>
+        .container {
+            width: 500px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        h2 {
+            margin: 20px 0;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0;
+        }
+
+        input[type="submit"] {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        #answers {
+            margin-top: 50px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Welcome! Would you like to continue?</h2>
+        <form id="questionnaire">
+            <label><input type="radio" name="start_choice" value="yes" required> Yes</label>
+            <label><input type="radio" name="start_choice" value="no" required> No</label>
+            <input type="submit" value="Start">
+        </form>
+    </div>
+
+    <div id="answers" class="container"></div>
+
+    <script>
+        document.getElementById("questionnaire").addEventListener("submit", function (event) {
+            event.preventDefault();
+            var startChoice = document.querySelector('input[name="start_choice"]:checked').value;
+
+            if (startChoice === "yes") {
+                var questions = [
+                    "How are you doing?",
+                    "Do you like memes?",
+                    "What is your favorite song?",
+                    "What is your favorite book?",
+                    "What is your favorite color?",
+                    "What is your favorite subject in school?",
+                    "Would you like to hear a joke?",
+                    "What is your name?",
+                    "I think I've done enough. Will you answer my DM?"
+                ];
+
+                var answers = [];
+
+                var currentQuestion = 0;
+
+                var formContainer = document.querySelector(".container");
+                formContainer.style.display = "none";
+
+                var answersContainer = document.getElementById("answers");
+                answersContainer.innerHTML = "";
+
+                var form = document.createElement("form");
+
+                form.addEventListener("submit", function (event) {
+                    event.preventDefault();
+
+                    var answer;
+                    if (currentQuestion === 1 || currentQuestion === 7 || currentQuestion === 9) {
+                        var options = ["Yes", "No"];
+                        answer = getRadioButtonValue(options);
+                    } else {
+                        answer = document.getElementById("answer").value;
+                    }
+
+                    answers.push(answer);
+
+                    if (currentQuestion === questions.length - 1) {
+                        form.style.display = "none";
+                        var answerList = document.createElement("ul");
+                        answersContainer.appendChild(answerList);
+
+                        for (var i = 0; i < questions.length; i++) {
+                            var listItem = document.createElement("li");
+                            listItem.innerHTML = questions[i] + " - " + answers[i];
+                            answerList.appendChild(listItem);
+                        }
+
+                        if (answers[6] === "Yes") {
+                            var jokeList = [
+                                "Why don’t skeletons fight each other? They don’t have the guts!",
+                                "Why did the bicycle fall over? Because it was two-tired!",
+                                "I wouldn't buy anything with velcro. It's a total rip-off!",
+                                "Why did the tomato turn red? Because it saw the salad dressing!",
+                                "I'm reading a book about anti-gravity. It's impossible to put down!",
+                                "Why couldn't the leopard play hide and seek? Because he was always spotted!",
+                                "Why did the golfer bring two pairs of pants? In case he got a hole-in-one!",
+                                "Why did the scarecrow win an award? Because he was outstanding in his field!",
+                                "Why did the tomato turn red? Because it saw the salad dressing!",
+                                "Did you hear about the kidnapping at the playground? They woke up!"
+                            ];
+
+                            var randomJoke = jokeList[Math.floor(Math.random() * jokeList.length)];
+                            var jokeElement = document.createElement("p");
+                            jokeElement.innerHTML = "<strong>Joke:</strong> " + randomJoke;
+                            answersContainer.appendChild(jokeElement);
+                        }
+
+                        if (answers[8] === "Yes") {
+                            var dmLink = document.createElement("a");
+                            dmLink.href = "http://r.mtdv.me/jR85HknnTY";
+                            dmLink.target = "_blank";
+                            dmLink.innerText = "Click here to answer the DM";
+                            answersContainer.appendChild(dmLink);
+                        }
+                    } else {
+                        currentQuestion++;
+                        renderQuestion();
+                    }
+                });
+
+                function renderQuestion() {
+                    var question = questions[currentQuestion];
+                    var options = [];
+
+                    var formHTML = "<h2>" + question + "</h2>";
+                    if (currentQuestion === 1 || currentQuestion === 7 || currentQuestion === 9) {
+                        options = ["Yes", "No"];
+                        for (var i = 0; i < options.length; i++) {
+                            formHTML += '<label><input type="radio" name="option" value="' + i + '" required> ' + options[i] + '</label>';
+                        }
+                    } else {
+                        formHTML += '<input type="text" id="answer" required>';
+                    }
+                    formHTML += '<br>';
+                    formHTML += '<input type="submit" value="Next">';
+
+                    form.innerHTML = formHTML;
+                }
+
+                renderQuestion();
+
+                answersContainer.appendChild(form);
+
+                function getRadioButtonValue(options) {
+                    var radioButtons = form.querySelectorAll('input[name="option"]');
+                    for (var i = 0; i < radioButtons.length; i++) {
+                        if (radioButtons[i].checked) {
+                            return options[parseInt(radioButtons[i].value)];
+                        }
+                    }
+                    return null;
+                }
+            } else {
+                var answersContainer = document.getElementById("answers");
+                answersContainer.innerHTML = "<h2>Restart the code to try again.</h2>";
+            }
+        });
+    </script>
+</body>
+</html>
